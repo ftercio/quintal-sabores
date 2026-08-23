@@ -1392,7 +1392,7 @@ footer{background:var(--preto);padding:60px 7% 32px;}
 // Textos das seções dinâmicos (renderização anti-XSS via textContent)
 (function(){
   function $(id){ return document.getElementById(id); }
-  function esc(s){ return String(s==null?'':s).replace(/[\u0026\u003c\u003e\"']/g, function(c){ return {'\u0026':'\u0026amp;','\u003c':'\u0026lt;','\u003e':'\u0026gt;','\"':'\u0026quot;',"'\":'\u0026#39;'}[c]; }); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
   fetch('/api/secoes')
     .then(function(r){ if(!r.ok) throw new Error('api'); return r.json(); })
