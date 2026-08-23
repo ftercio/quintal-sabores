@@ -607,6 +607,10 @@ class Handler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         path = unquote(parsed.path)
 
+        # Health check endpoint para o Render / Railway
+        if path == "/healthz":
+            return self.send_json({"status": "ok"})
+
         if path == "/api/atracoes":
             query = parsed.query
             params = urllib.parse.parse_qs(query)
@@ -873,6 +877,8 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    import threading
+
     if not os.path.exists(DATA_FILE):
         save_json_file(DATA_FILE, [])
     if not os.path.exists(PROGRAMACAO_FILE):
@@ -889,11 +895,20 @@ if __name__ == "__main__":
         ]
         save_json_file(EDICOES_FILE, default_eds)
 
-    # Tenta realizar o seeding idempotente se a tabela do Supabase estiver vazia
-    seed_database_if_needed()
+    # Seed e migrações rodam em background para não travar o boot
+    # (evita timeout no health check do Render / Railway)
+    def _background_init():
+        try:
+            seed_database_if_needed()
+        except Exception as e:
+            print(f"[Background Init] Erro no seed: {e}")
+        try:
+            migrate_images_to_supabase_storage()
+        except Exception as e:
+            print(f"[Background Init] Erro na migração de imagens: {e}")
 
-    # Tenta migrar imagens do diretório uploads para o Supabase Storage
-    migrate_images_to_supabase_storage()
+    bg = threading.Thread(target=_background_init, daemon=True)
+    bg.start()
 
     print(f"Servidor rodando em http://0.0.0.0:{PORT}")
     print(f"  Site:  http://localhost:{PORT}/")
@@ -903,4 +918,3 @@ if __name__ == "__main__":
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
-
