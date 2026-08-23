@@ -1,0 +1,62 @@
+[
+  {
+    "id": "a4",
+    "nome": "JURANDY E SEUS TECLADOS",
+    "tag": "Domingo",
+    "tipo": "Domingo · 18h · Palco Principal",
+    "destaque": false,
+    "media": {
+      "url": "https://wowzbcvqfsibkfyjpnbp.supabase.co/storage/v1/object/public/atracoes/0f0834303b6926a366ebe308.png",
+      "type": "photo"
+    },
+    "edicao": "edicao-2026"
+  },
+  {
+    "id": "71e2ab9839cf9357",
+    "nome": "SAMBA DO QUINTAL",
+    "tag": "Sábado",
+    "tipo": "Sábado · 22h · Palco Principal",
+    "destaque": false,
+    "media": {
+      "url": "https://wowzbcvqfsibkfyjpnbp.supabase.co/storage/v1/object/public/atracoes/9daf816f998d78bd43324cf2.png",
+      "type": "photo"
+    },
+    "edicao": "edicao-2026"
+  },
+  {
+    "id": "a1",
+    "nome": "BANDA DO ZÉ PELIM",
+    "tag": "Headliner",
+    "tipo": "Sábado · 21h · Palco Principal",
+    "destaque": true,
+    "media": {
+      "url": "https://youtu.be/RQJoKEZRYrI?si=cc75q4fXOqULerkJ",
+      "type": "video"
+    },
+    "edicao": "edicao-2026"
+  },
+  {
+    "id": "a2",
+    "nome": "DJ ARAME E VADÃO",
+    "tag": "Sábado",
+    "tipo": "Sábado · 19h · Palco Principal",
+    "destaque": false,
+    "media": {
+      "url": "https://wowzbcvqfsibkfyjpnbp.supabase.co/storage/v1/object/public/atracoes/293983d57b3e56aeaf207350.png",
+      "type": "photo"
+    },
+    "edicao": "edicao-2026"
+  },
+  {
+    "nome": "MUNDO CAPOEIRA",
+    "tag": "Cultural",
+    "tipo": "Sábado e domingo · Espaço Cultural",
+    "destaque": false,
+    "edicao": "edicao-2026",
+    "media": {
+      "type": "photo",
+      "url": "https://wowzbcvqfsibkfyjpnbp.supabase.co/storage/v1/object/public/atracoes/21945d15754363dbc9b22159.png"
+    },
+    "id": "a3"
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "hero": {
+    "eyebrow": "13 e 14 de Junho · Boa Vista · Entrada Gratuita",
+    "descricao": "O festival que celebra a culinária das comunidades de favela e a riqueza cultural da periferia de BH.",
+    "imagens": [
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1920,fit=crop/6eeMHGCTGKHVsngE/img_0389-2-bwAt7NDAy9uQCPDr.JPG",
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1920,fit=crop/6eeMHGCTGKHVsngE/img_0397-fe79gn2yRvLzSMEx.JPG",
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1920,fit=crop/6eeMHGCTGKHVsngE/img_0387-2-cllCwMOktHedWUfd.JPG",
+      "https://wowzbcvqfsibkfyjpnbp.supabase.co/storage/v1/object/public/atracoes/bf49c3196a5368d40c475739.jpg"
+    ]
+  },
+  "sobre": {
+    "titulo": "MAIS QUE UM FESTIVAL. UM MOVIMENTO.",
+    "descricao": "O Festival Quintal dos Sabores é um evento gastronômico e cultural que celebra a culinária das comunidades de favela e a riqueza cultural da periferia.",
+    "imagens": [
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=423,fit=crop/6eeMHGCTGKHVsngE/whatsapp-image-2026-06-28-at-21.36.17-VSbfwacAZh5RxgpD.jpeg",
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=385,fit=crop/6eeMHGCTGKHVsngE/img_0397-fe79gn2yRvLzSMEx.JPG",
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=385,fit=crop/6eeMHGCTGKHVsngE/img_0387-2-cllCwMOktHedWUfd.JPG"
+    ]
+  },
+  "pilares": {
+    "eyebrow": "O QUE VOCÊ ENCONTRA NO QUINTAL",
+    "titulo": "Mais do que uma festa — um encontro de sabores, talentos e histórias que acontece na periferia."
+  },
+  "gastronomia": {
+    "eyebrow": "Gastronomia",
+    "titulo": "A GASTRONOMIA COMO FERRAMENTA DE TRANSFORMAÇÃO SOCIAL",
+    "descricao": "Valorizar a gastronomia periférica e sua ancestralidade. Promover autoestima e inclusão social dos empreendedores locais. Fomentar a economia criativa e geração de renda.",
+    "visivel": false
+  },
+  "inscricao": {
+    "titulo": "FAÇA PARTE DO QUINTAL",
+    "descricao": "Seja empreendedor, artista ou ministrante de oficina — o Quintal é construído por e para a comunidade."
+  },
+  "footer": {
+    "marca_texto": "Festival gastronômico e cultural que valoriza a gastronomia de periferia como instrumento de poder, identidade e transformação social."
+  }
+}

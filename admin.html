@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel Admin · Quintal dos Sabores</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --amarelo:#F5B800; --vermelho:#C0392B; --preto:#1A1208;
+  --branco:#FEFCF5; --cinza:#F2EDE0; --cinza-texto:#4A3F2F; --verde:#2E7D32;
+}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#12100c;color:var(--branco);line-height:1.5;min-height:100vh}
+a{color:inherit}
+
+/* ---- login ---- */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{background:var(--preto);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:40px;width:100%;max-width:380px}
+.login-card h1{font-size:22px;margin-bottom:6px}
+.login-card p{color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:24px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--amarelo);margin-bottom:6px}
+input[type=text],input[type=password],input[type=url],input[type=email],select,textarea{
+  width:100%;padding:12px 14px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);
+  background:#0d0a06;color:var(--branco);font-size:14px;outline:none;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--amarelo);box-shadow:0 0 0 2px rgba(245,184,0,0.25)}
+button{cursor:pointer;border:none;font-family:inherit}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:6px;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;transition:opacity .15s,transform .1s}
+.btn:hover{opacity:.88}
+.btn:active{transform:translateY(1px)}
+.btn-amarelo{background:var(--amarelo);color:var(--preto)}
+.btn-vermelho{background:var(--vermelho);color:#fff}
+.btn-fantasma{background:none;border:1px solid rgba(255,255,255,0.25);color:var(--branco)}
+.btn-verde{background:var(--verde);color:#fff}
+.btn-sm{padding:7px 12px;font-size:11px;border-radius:5px}
+.err{color:#ff7b6b;font-size:13px;margin-top:12px;min-height:18px}
+
+/* ---- layout do painel ---- */
+.topbar{background:var(--preto);border-bottom:1px solid rgba(255,255,255,0.08);padding:0 5%;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.topbar .brand{font-weight:800;font-size:16px;letter-spacing:.5px}
+.topbar .brand span{color:var(--amarelo)}
+.topbar .actions{display:flex;gap:10px;align-items:center}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 5% 64px}
+.page-title{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.page-title h2{font-size:26px}
+.page-title p{color:rgba(255,255,255,0.5);font-size:13px}
+
+/* ---- lista de atrações ---- */
+.atracoes-list{display:flex;flex-direction:column;gap:12px}
+.atra-item{display:flex;gap:16px;align-items:center;background:var(--preto);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;flex-wrap:wrap}
+.atra-thumb{width:96px;height:64px;border-radius:6px;overflow:hidden;background:#0d0a06;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.3);font-size:11px}
+.atra-thumb img{width:100%;height:100%;object-fit:cover}
+.atra-thumb iframe{width:100%;height:100%;border:0;pointer-events:none}
+.atra-info{flex:1;min-width:200px}
+.atra-info .nome{font-weight:700;font-size:15px}
+.atra-info .meta{font-size:12px;color:rgba(255,255,255,0.5)}
+.atra-info .badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:3px;background:var(--vermelho);color:#fff;margin-left:6px}
+.atra-info .badge.destaque{background:var(--amarelo);color:var(--preto)}
+.atra-actions{display:flex;gap:6px;align-items:center}
+.arrow{background:none;border:1px solid rgba(255,255,255,0.15);color:var(--branco);width:30px;height:30px;border-radius:5px;font-size:14px}
+.arrow:hover{border-color:var(--amarelo);color:var(--amarelo)}
+.arrow:disabled{opacity:.25;cursor:default}
+
+/* ---- modal de formulário ---- */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+.modal-bg.open{display:flex}
+.modal{background:var(--preto);border:1px solid rgba(255,255,255,0.12);border-radius:14px;width:100%;max-width:560px;max-height:92vh;overflow:auto;padding:28px}
+.modal h3{font-size:20px;margin-bottom:20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.radio-group{display:flex;gap:10px;margin-bottom:16px}
+.radio-group label{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1px solid rgba(255,255,255,0.15);border-radius:8px;cursor:pointer;font-size:13px;font-weight:600}
+.radio-group input{display:none}
+.radio-group input:checked + span{color:var(--amarelo)}
+.radio-group label:has(input:checked){border-color:var(--amarelo);background:rgba(245,184,0,0.08)}
+.media-preview{margin-top:10px;border-radius:8px;overflow:hidden;background:#0d0a06;min-height:60px;display:flex;align-items:center;justify-content:center}
+.media-preview img{max-width:100%;max-height:200px;display:block}
+.media-preview iframe{width:100%;aspect-ratio:16/9;border:0}
+.check{display:flex;align-items:center;gap:10px;margin:16px 0 4px;font-size:14px}
+.check input{width:18px;height:18px;accent-color:var(--amarelo)}
+.modal .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
+.hint{font-size:12px;color:rgba(255,255,255,0.45);margin-top:6px}
+.empty{padding:40px;text-align:center;color:rgba(255,255,255,0.4);border:1px dashed rgba(255,255,255,0.15);border-radius:10px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--verde);color:#fff;padding:12px 22px;border-radius:8px;font-weight:600;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,0.4);z-index:99;opacity:0;pointer-events:none;transition:opacity .25s}
+.toast.show{opacity:1}
+.toast.erro{background:var(--vermelho)}
+
+/* ---- abas & formulários ---- */
+.tabs{display:flex;gap:8px;border-bottom:1px solid rgba(255,255,255,0.12);margin-bottom:24px}
+.tab-btn{background:none;border:none;color:rgba(255,255,255,0.6);padding:12px 18px;font-weight:700;font-size:14px;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.tab-btn:hover{color:var(--amarelo)}
+.tab-btn.active{color:var(--amarelo);border-bottom-color:var(--amarelo)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.card-box{background:var(--preto);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:24px;margin-bottom:24px}
+.card-box h3{font-size:18px;margin-bottom:16px;color:var(--amarelo);border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:8px}
+.prog-day-card{background:#0d0a06;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:18px;margin-bottom:20px}
+.prog-item-row{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.prog-item-row input{flex:1;min-width:120px}
+.prog-item-row input.hora{max-width:90px;flex:none}
+.edicao-row{display:flex;align-items:center;justify-content:space-between;padding:12px;background:#0d0a06;border:1px solid rgba(255,255,255,0.08);border-radius:8px;margin-bottom:10px}
+.edicao-info-meta{display:flex;flex-direction:column;gap:4px}
+.edicao-badge{padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;width:fit-content}
+.edicao-badge.ativa{background:var(--verde);color:#fff}
+.edicao-badge.arquivada{background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.7)}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
+
+/* ---- gerenciador de imagens hero ---- */
+.hero-imgs-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.hero-img-item{display:flex;align-items:center;gap:12px;background:#0d0a06;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px}
+.hero-img-thumb{width:100px;height:56px;border-radius:6px;object-fit:cover;background:#1a1208;flex-shrink:0}
+.hero-img-url{flex:1;font-size:12px;color:rgba(255,255,255,0.6);word-break:break-all;overflow:hidden;max-height:32px}
+.hero-img-actions{display:flex;gap:6px;flex-shrink:0}
+.hero-img-order{background:none;border:1px solid rgba(255,255,255,0.2);color:var(--branco);width:28px;height:28px;border-radius:5px;font-size:13px;display:flex;align-items:center;justify-content:center}
+.hero-img-order:hover{border-color:var(--amarelo);color:var(--amarelo)}
+.hero-img-order:disabled{opacity:.2;cursor:default}
+.hero-img-rm{background:var(--vermelho);color:#fff;border:none;width:28px;height:28px;border-radius:5px;font-size:14px;display:flex;align-items:center;justify-content:center}
+.hero-img-rm:hover{opacity:.85}
+.hero-img-add-row{display:flex;gap:10px;align-items:flex-end}
+.hero-img-add-row .field{flex:1;margin-bottom:0}
+
+@media(max-width:600px){.grid2{grid-template-columns:1fr}.atra-thumb{width:72px;height:48px}.prog-item-row{flex-direction:column;align-items:stretch}.edicao-row{flex-direction:column;align-items:stretch;gap:10px}.hero-img-add-row{flex-direction:column;align-items:stretch}}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div class="login-wrap" id="login-view">
+  <div class="login-card">
+    <h1>Quintal dos Sabores <span style="color:var(--amarelo)">·</span> Admin</h1>
+    <p>Entre para gerenciar o conteúdo do festival.</p>
+    <div class="field">
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn btn-amarelo" style="width:100%" id="btn-login">Entrar</button>
+    <p class="err" id="login-err"></p>
+  </div>
+</div>
+
+<!-- ============ PAINEL ============ -->
+<div id="panel-view" style="display:none">
+  <div class="topbar">
+    <div class="brand">Quintal dos Sabores <span>· Admin</span></div>
+    <div class="actions">
+      <a class="btn btn-fantasma btn-sm" href="/" target="_blank">Ver site ↗</a>
+      <button class="btn btn-fantasma btn-sm" id="btn-logout">Sair</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tab-atracoes">🎤 Atrações</button>
+      <button class="tab-btn" data-tab="tab-programacao">📅 Programação</button>
+      <button class="tab-btn" data-tab="tab-secoes">📝 Textos do Site</button>
+      <button class="tab-btn" data-tab="tab-edicoes">📅 Edições</button>
+    </div>
+
+    <!-- TAB: ATRAÇÕES -->
+    <div class="tab-content active" id="tab-atracoes">
+      <div class="page-title">
+        <div>
+          <h2>Atrações</h2>
+          <p>Gerencie quem faz o Quintal acontecer — foto ou vídeo do YouTube.</p>
+        </div>
+        <button class="btn btn-amarelo" id="btn-nova">+ Nova atração</button>
+      </div>
+
+      <div class="atracoes-list" id="lista"></div>
+    </div>
+
+    <!-- TAB: PROGRAMAÇÃO -->
+    <div class="tab-content" id="tab-programacao">
+      <div class="page-title">
+        <div>
+          <h2>Programação do Festival</h2>
+          <p>Gerencie os dias e a grade de horários de cada palco.</p>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-fantasma" id="btn-add-dia">+ Adicionar Dia</button>
+          <button class="btn btn-verde" id="btn-salvar-prog">Salvar Programação</button>
+        </div>
+      </div>
+      <div id="programacao-container"></div>
+    </div>
+
+    <!-- TAB: TEXTOS DO SITE -->
+    <div class="tab-content" id="tab-secoes">
+      <div class="page-title">
+        <div>
+          <h2>Textos das Seções</h2>
+          <p>Edite os textos principais exibidos no site público (texto puro, escapado).</p>
+        </div>
+        <button class="btn btn-verde" id="btn-salvar-secoes">Salvar Textos</button>
+      </div>
+
+      <div class="card-box">
+        <h3>Hero (Destaque Principal)</h3>
+        <div class="field">
+          <label>Eyebrow (Linha superior)</label>
+          <input type="text" id="sec-hero-eyebrow-input" placeholder="Ex.: Festival Gastronômico · Belo Horizonte · 2026">
+        </div>
+        <div class="field">
+          <label>Descrição do Hero</label>
+          <textarea id="sec-hero-desc-input" rows="2" placeholder="Descrição curta abaixo do título"></textarea>
+        </div>
+
+        <label style="font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--amarelo);display:block;margin:20px 0 10px;border-top:1px solid rgba(255,255,255,0.08);padding-top:16px">🖼️ Imagens do Carrossel Hero</label>
+        <p class="hint" style="margin-bottom:12px">Gerencie as imagens de fundo que aparecem no carrossel do destaque principal. Arraste para reordenar.</p>
+        <div id="hero-imgs-list" class="hero-imgs-list"></div>
+        <div class="hero-img-add-row">
+          <div class="field">
+            <label>Adicionar imagem (URL)</label>
+            <input type="url" id="hero-img-url-input" placeholder="https://... (cole a URL da imagem)">
+          </div>
+          <button class="btn btn-fantasma btn-sm" id="btn-hero-add-url" style="height:42px;white-space:nowrap">+ Adicionar URL</button>
+        </div>
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <label class="btn btn-fantasma btn-sm" for="hero-img-file" style="cursor:pointer;margin:0;height:40px;display:inline-flex;align-items:center">📁 Upload do Computador</label>
+          <input type="file" id="hero-img-file" accept="image/*" style="display:none">
+          <button class="btn btn-verde btn-sm" id="btn-salvar-hero-imgs" style="height:40px">💾 Salvar Imagens do Hero</button>
+          <span id="hero-upload-status" class="hint" style="font-weight:600;color:var(--amarelo)"></span>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <h3>Sobre o Festival</h3>
+        <div class="field">
+          <label>Título principal</label>
+          <input type="text" id="sec-sobre-titulo-input" placeholder="Ex.: MAIS QUE UM FESTIVAL. UM MOVIMENTO.">
+        </div>
+        <div class="field">
+          <label>Descrição principal</label>
+          <textarea id="sec-sobre-desc-input" rows="3" placeholder="Texto descritivo sobre o festival"></textarea>
+        </div>
+        <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
+          <label style="font-weight:600;display:block;margin-bottom:10px">Imagens da Composição (3 fotos)</label>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px">
+            <!-- Imagem 1 -->
+            <div class="field">
+              <label style="font-size:12px;color:var(--text-muted)">1. Foto Principal (Topo)</label>
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+                <img id="sec-sobre-img1-prev" src="" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:#eee;border:1px solid var(--border)">
+                <input type="file" id="sec-sobre-img1-file" accept="image/*" style="display:none">
+                <button type="button" class="btn btn-sm btn-sec" onclick="$('sec-sobre-img1-file').click()">📁 Upload</button>
+              </div>
+              <input type="text" id="sec-sobre-img1-input" placeholder="URL da imagem 1">
+            </div>
+            <!-- Imagem 2 -->
+            <div class="field">
+              <label style="font-size:12px;color:var(--text-muted)">2. Foto Esquerda (Baixo)</label>
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+                <img id="sec-sobre-img2-prev" src="" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:#eee;border:1px solid var(--border)">
+                <input type="file" id="sec-sobre-img2-file" accept="image/*" style="display:none">
+                <button type="button" class="btn btn-sm btn-sec" onclick="$('sec-sobre-img2-file').click()">📁 Upload</button>
+              </div>
+              <input type="text" id="sec-sobre-img2-input" placeholder="URL da imagem 2">
+            </div>
+            <!-- Imagem 3 -->
+            <div class="field">
+              <label style="font-size:12px;color:var(--text-muted)">3. Foto Direita (Baixo)</label>
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+                <img id="sec-sobre-img3-prev" src="" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:#eee;border:1px solid var(--border)">
+                <input type="file" id="sec-sobre-img3-file" accept="image/*" style="display:none">
+                <button type="button" class="btn btn-sm btn-sec" onclick="$('sec-sobre-img3-file').click()">📁 Upload</button>
+              </div>
+              <input type="text" id="sec-sobre-img3-input" placeholder="URL da imagem 3">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <h3>Nossos Pilares</h3>
+        <div class="grid2">
+          <div class="field">
+            <label>Eyebrow / Título Superior</label>
+            <input type="text" id="sec-pilares-eyebrow-input" placeholder="Ex.: O QUE VOCÊ ENCONTRA NO QUINTAL">
+          </div>
+          <div class="field">
+            <label>Subtítulo do Cabeçalho</label>
+            <input type="text" id="sec-pilares-titulo-input" placeholder="Ex.: Mais do que uma festa...">
+          </div>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <h3 style="margin:0">Gastronomia</h3>
+          <label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer">
+            <input type="checkbox" id="sec-gastronomia-visivel-input" style="width:18px;height:18px;cursor:pointer">
+            Exibir no site
+          </label>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label>Eyebrow (Selo)</label>
+            <input type="text" id="sec-gastronomia-eyebrow-input" placeholder="Ex.: Gastronomia">
+          </div>
+          <div class="field">
+            <label>Título</label>
+            <input type="text" id="sec-gastronomia-titulo-input" placeholder="Ex.: A GASTRONOMIA COMO FERRAMENTA...">
+          </div>
+        </div>
+        <div class="field">
+          <label>Parágrafo de Descrição</label>
+          <textarea id="sec-gastronomia-desc-input" rows="3"></textarea>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <h3>Inscrição / Participação</h3>
+        <div class="field">
+          <label>Título</label>
+          <input type="text" id="sec-inscricao-titulo-input" placeholder="Ex.: FAÇA PARTE DO QUINTAL">
+        </div>
+        <div class="field">
+          <label>Descrição</label>
+          <textarea id="sec-inscricao-desc-input" rows="2"></textarea>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <h3>Rodapé (Footer)</h3>
+        <div class="field">
+          <label>Texto da Marca / Institucional</label>
+          <textarea id="sec-footer-texto-input" rows="2"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: EDIÇÕES -->
+    <div class="tab-content" id="tab-edicoes">
+      <div class="page-title">
+        <div>
+          <h2>Edições do Festival</h2>
+          <p>Gerencie as edições anteriores e ative o ano atual do festival.</p>
+        </div>
+        <button class="btn btn-amarelo" id="btn-nova-edicao">+ Nova Edição</button>
+      </div>
+
+      <div class="card-box">
+        <h3>Edição Ativa</h3>
+        <div id="edicao-ativa-info" style="font-size: 16px; font-weight: 500; display: flex; align-items: center; gap: 10px;">Carregando...</div>
+      </div>
+
+      <div class="card-box">
+        <h3>Todas as Edições</h3>
+        <div id="edicoes-lista"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ MODAL EDIÇÃO ============ -->
+<div class="modal-bg" id="modal-edicao-bg">
+  <div class="modal">
+    <h3>Nova Edição do Festival</h3>
+    <div class="field">
+      <label>Ano (Ex: 2027)</label>
+      <input type="text" id="ed-ano" placeholder="Ex.: 2027">
+    </div>
+    <div class="field">
+      <label>Nome da Edição (Ex: 7ª Edição)</label>
+      <input type="text" id="ed-nome" placeholder="Ex.: 7ª Edição">
+    </div>
+    <div class="field">
+      <label>Subtítulo / Descrição (Data e Local)</label>
+      <input type="text" id="ed-subtitulo" placeholder="Ex.: Junho 2027 · Bairro Boa Vista">
+    </div>
+    <div class="field" style="display:flex;align-items:center;gap:8px;margin:12px 0">
+      <input type="checkbox" id="ed-ativa" style="width:18px;height:18px;accent-color:var(--amarelo)">
+      <span>Tornar esta a edição ativa imediatamente</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-fantasma" id="btn-cancela-edicao">Cancelar</button>
+      <button class="btn btn-verde" id="btn-salva-edicao">Criar Edição</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL FORM ============ -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-titulo">Nova atração</h3>
+
+    <div class="field">
+      <label>Nome da atração</label>
+      <input type="text" id="f-nome" placeholder="Ex.: BANDA DO ZÉ PELIM">
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>Tag / selo</label>
+        <input type="text" id="f-tag" placeholder="Ex.: Headliner, Sábado, Cultural">
+      </div>
+      <div class="field">
+        <label>Subtítulo (data/horário)</label>
+        <input type="text" id="f-tipo" placeholder="Ex.: Sábado · 21h · Palco Principal">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Edição (Ano)</label>
+      <select id="f-edicao" style="width:100%;padding:10px;border-radius:6px;background:#0d0a06;color:#fff;border:1px solid rgba(255,255,255,0.15)"></select>
+    </div>
+
+    <label style="font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--amarelo);display:block;margin-bottom:6px">Mídia</label>
+    <div class="radio-group">
+      <label><input type="radio" name="media" value="photo" checked><span>📷 Foto</span></label>
+      <label><input type="radio" name="media" value="video"><span>🎬 Vídeo (YouTube)</span></label>
+    </div>
+
+    <div class="field" id="campo-url">
+      <label id="url-label">URL da foto</label>
+      <input type="url" id="f-url" placeholder="https://...">
+      <p class="hint">Cole a URL de uma imagem hospedada ou use o botão abaixo para enviar um arquivo.</p>
+    </div>
+
+    <div class="field" id="campo-upload" style="display:none">
+      <label>Enviar imagem do computador</label>
+      <input type="file" id="f-file" accept="image/*">
+    </div>
+
+    <div class="media-preview" id="media-preview"></div>
+
+    <div class="check">
+      <input type="checkbox" id="f-destaque">
+      <span>Marcar como <strong>destaque</strong> (card grande no topo)</span>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-fantasma" id="btn-cancelar">Cancelar</button>
+      <button class="btn btn-verde" id="btn-salvar">Salvar</button>
+    </div>
+    <p class="err" id="form-err"></p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var TOKEN = localStorage.getItem('qs_admin_token') || '';
+var atracoes = [];
+var editandoId = null;
+var arquivoBase64 = null;
+var heroImagens = [];
+
+var $ = function(id){ return document.getElementById(id); };
+
+function toast(msg, isErr){
+  var t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isErr ? ' erro' : '');
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.className = 'toast'; }, 2800);
+}
+
+function esc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+function youtubeId(url){
+  var m = String(url||'').match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+  return m ? m[1] : null;
+}
+
+function api(path, opts){
+  opts = opts || {};
+  opts.headers = opts.headers || {};
+  if(TOKEN) opts.headers['X-Admin-Token'] = TOKEN;
+  if(opts.body && typeof opts.body !== 'string') opts.body = JSON.stringify(opts.body);
+  if(opts.body && !opts.headers['Content-Type']) opts.headers['Content-Type'] = 'application/json';
+  return fetch(path, opts).then(function(r){
+    return r.json().catch(function(){ return {}; }).then(function(j){
+      if(r.status === 401 && TOKEN){
+        toast('Sessão expirada. Faça login novamente.', true);
+        setTimeout(logout, 1500);
+      }
+      if(!r.ok) throw new Error(j.erro || ('Erro ' + r.status));
+      return j;
+    });
+  });
+}
+
+/* ---------- login & inatividade ---------- */
+var INACTIVITY_LIMIT = 15 * 60 * 1000;
+var inactivityTimer = null;
+
+function resetInactivityTimer(){
+  if(!TOKEN) return;
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(function(){
+    toast('Sessão encerrada por inatividade (15 min)', true);
+    setTimeout(logout, 1500);
+  }, INACTIVITY_LIMIT);
+}
+
+['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(function(evt){
+  window.addEventListener(evt, resetInactivityTimer, { passive: true });
+});
+
+function logout(){
+  TOKEN = '';
+  localStorage.removeItem('qs_admin_token');
+  clearTimeout(inactivityTimer);
+  location.reload();
+}
+
+/* ---------- gerenciamento de abas ---------- */
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tab-content').forEach(function(c){ c.classList.remove('active'); });
+    btn.classList.add('active');
+    var tabId = btn.getAttribute('data-tab');
+    if($(tabId)) $(tabId).classList.add('active');
+  });
+});
+
+$('btn-login').addEventListener('click', login);
+$('senha').addEventListener('keydown', function(e){ if(e.key === 'Enter') login(); });
+function login(){
+  var senha = $('senha').value;
+  api('/api/login', { method:'POST', body:{ senha: senha } })
+    .then(function(r){
+      TOKEN = r.token;
+      localStorage.setItem('qs_admin_token', TOKEN);
+      entrar();
+    })
+    .catch(function(e){ $('login-err').textContent = e.message; });
+}
+function entrar(){
+  $('login-view').style.display = 'none';
+  $('panel-view').style.display = 'block';
+  resetInactivityTimer();
+  carregar();
+  carregarProgramacao();
+  carregarSecoes();
+  carregarEdicoes();
+}
+$('btn-logout').addEventListener('click', logout);
+
+/* ---------- carregar / listar atrações ---------- */
+function carregar(){
+  api('/api/atracoes').then(function(list){
+    atracoes = list || [];
+    renderLista();
+  }).catch(function(e){ toast('Erro ao carregar atrações: ' + e.message, true); });
+}
+
+function renderLista(){
+  var el = $('lista');
+  if(!atracoes.length){
+    el.innerHTML = '<div class="empty">Nenhuma atração cadastrada ainda. Clique em “+ Nova atração”.</div>';
+    return;
+  }
+  el.innerHTML = '';
+  atracoes.forEach(function(a, i){
+    var item = document.createElement('div');
+    item.className = 'atra-item';
+
+    var media = a.media || {};
+    var thumb;
+    if(media.type === 'video'){
+      var vid = youtubeId(media.url);
+      thumb = vid
+        ? '<iframe src="https://www.youtube.com/embed/' + vid + '" loading="lazy"></iframe>'
+        : '<span>vídeo</span>';
+    } else {
+      thumb = media.url ? '<img src="' + esc(media.url) + '" alt="">' : '<span>sem mídia</span>';
+    }
+
+    var badges = (a.destaque ? '<span class="badge destaque">Destaque</span>' : '');
+    badges += media.type === 'video' ? '<span class="badge">Vídeo</span>' : '';
+
+    item.innerHTML =
+      '<div class="atra-thumb">' + thumb + '</div>' +
+      '<div class="atra-info">' +
+        '<div class="nome">' + esc(a.nome) + badges + '</div>' +
+        '<div class="meta">' + esc(a.tag || '') + (a.tag && a.tipo ? ' · ' : '') + esc(a.tipo || '') + '</div>' +
+      '</div>' +
+      '<div class="atra-actions">' +
+        '<button class="arrow" data-acao="up" data-idx="' + i + '" ' + (i === 0 ? 'disabled' : '') + ' title="Mover para cima">↑</button>' +
+        '<button class="arrow" data-acao="down" data-idx="' + i + '" ' + (i === atracoes.length - 1 ? 'disabled' : '') + ' title="Mover para baixo">↓</button>' +
+        '<button class="btn btn-fantasma btn-sm" data-acao="edit" data-id="' + esc(a.id) + '">Editar</button>' +
+        '<button class="btn btn-vermelho btn-sm" data-acao="del" data-id="' + esc(a.id) + '">Excluir</button>' +
+      '</div>';
+    el.appendChild(item);
+  });
+}
+
+$('lista').addEventListener('click', function(e){
+  var btn = e.target.closest('[data-acao]');
+  if(!btn) return;
+  var acao = btn.getAttribute('data-acao');
+  var idx = parseInt(btn.getAttribute('data-idx') || '-1', 10);
+  if(acao === 'up' && idx > 0){ trocar(idx, idx - 1); }
+  else if(acao === 'down' && idx >= 0 && idx < atracoes.length - 1){ trocar(idx, idx + 1); }
+  else if(acao === 'edit'){ abrirForm(btn.getAttribute('data-id')); }
+  else if(acao === 'del'){ excluir(btn.getAttribute('data-id')); }
+});
+
+function trocar(a, b){
+  var tmp = atracoes[a]; atracoes[a] = atracoes[b]; atracoes[b] = tmp;
+  salvarOrdem();
+}
+function salvarOrdem(){
+  var p = Promise.resolve();
+  atracoes.forEach(function(a){
+    p = p.then(function(){ return api('/api/atracoes/' + a.id, { method:'PUT', body: a }); });
+  });
+  p.then(function(){ renderLista(); toast('Ordem atualizada'); })
+   .catch(function(e){ toast('Erro ao salvar ordem: ' + e.message, true); carregar(); });
+}
+
+function excluir(id){
+  if(!confirm('Excluir esta atração?')) return;
+  api('/api/atracoes/' + id, { method:'DELETE' })
+    .then(function(){ toast('Atração excluída'); carregar(); })
+    .catch(function(e){ toast(e.message, true); });
+}
+
+/* ---------- form atrações ---------- */
+$('btn-nova').addEventListener('click', function(){ abrirForm(null); });
+$('btn-cancelar').addEventListener('click', fecharForm);
+$('modal-bg').addEventListener('click', function(e){ if(e.target === this) fecharForm(); });
+
+document.querySelectorAll('input[name=media]').forEach(function(r){
+  r.addEventListener('change', atualizarTipoMedia);
+});
+$('f-url').addEventListener('input', atualizarPreview);
+$('f-file').addEventListener('change', function(){
+  var f = this.files[0];
+  if(!f) return;
+  if(f.size > 8 * 1024 * 1024){ toast('Imagem muito grande (máx 8 MB)', true); return; }
+  var rd = new FileReader();
+  rd.onload = function(){
+    arquivoBase64 = rd.result;
+    atualizarPreview();
+  };
+  rd.readAsDataURL(f);
+});
+
+function atualizarTipoMedia(){
+  var tipo = document.querySelector('input[name=media]:checked').value;
+  var isVideo = tipo === 'video';
+  $('url-label').textContent = isVideo ? 'URL do vídeo (YouTube)' : 'URL da foto';
+  $('f-url').placeholder = isVideo
+    ? 'https://www.youtube.com/watch?v=...'
+    : 'https://...';
+  $('campo-upload').style.display = isVideo ? 'none' : 'block';
+  $('campo-url').style.display = isVideo ? 'block' : 'block';
+  atualizarPreview();
+}
+
+function atualizarPreview(){
+  var tipo = document.querySelector('input[name=media]:checked').value;
+  var box = $('media-preview');
+  if(tipo === 'video'){
+    var vid = youtubeId($('f-url').value);
+    box.innerHTML = vid
+      ? '<iframe src="https://www.youtube.com/embed/' + vid + '"></iframe>'
+      : '<span style="color:rgba(255,255,255,0.4);font-size:13px;padding:20px">Cole uma URL válida do YouTube para ver a prévia</span>';
+  } else {
+    var src = arquivoBase64 || $('f-url').value;
+    box.innerHTML = src
+      ? '<img src="' + esc(src) + '" alt="">'
+      : '<span style="color:rgba(255,255,255,0.4);font-size:13px;padding:20px">Prévia da foto</span>';
+  }
+}
+
+function abrirForm(id){
+  editandoId = id;
+  arquivoBase64 = null;
+  $('form-err').textContent = '';
+  $('f-file').value = '';
+
+  var a = id ? atracoes.find(function(x){ return x.id === id; }) : null;
+  $('modal-titulo').textContent = a ? 'Editar atração' : 'Nova atração';
+  $('f-nome').value = a ? a.nome : '';
+  $('f-tag').value = a ? (a.tag || '') : '';
+  $('f-tipo').value = a ? (a.tipo || '') : '';
+  $('f-destaque').checked = a ? !!a.destaque : false;
+  $('f-url').value = a && a.media ? a.media.url : '';
+
+  if (a && a.edicao) {
+    $('f-edicao').value = a.edicao;
+  } else {
+    var ativa = edicoesData.find(function(ed){ return ed.status === 'ativa'; });
+    if(ativa) $('f-edicao').value = ativa.id;
+  }
+
+  var tipo = a && a.media && a.media.type === 'video' ? 'video' : 'photo';
+  document.querySelector('input[name=media][value=' + tipo + ']').checked = true;
+  atualizarTipoMedia();
+
+  $('modal-bg').classList.add('open');
+  setTimeout(function(){ $('f-nome').focus(); }, 50);
+}
+
+function fecharForm(){ $('modal-bg').classList.remove('open'); }
+
+$('btn-salvar').addEventListener('click', salvar);
+function salvar(){
+  var tipo = document.querySelector('input[name=media]:checked').value;
+  var url = $('f-url').value.trim();
+
+  var dados = {
+    nome: $('f-nome').value.trim(),
+    tag: $('f-tag').value.trim(),
+    tipo: $('f-tipo').value.trim(),
+    destaque: $('f-destaque').checked,
+    edicao: $('f-edicao').value,
+    media: { type: tipo, url: url }
+  };
+
+  if(!dados.nome){ $('form-err').textContent = 'Informe o nome da atração'; return; }
+  if(tipo === 'video' && !youtubeId(url)){ $('form-err').textContent = 'Informe uma URL válida do YouTube'; return; }
+
+  var finalizar = function(urlFinal){
+    dados.media.url = urlFinal;
+    var req = editandoId
+      ? api('/api/atracoes/' + editandoId, { method:'PUT', body: dados })
+      : api('/api/atracoes', { method:'POST', body: dados });
+    req.then(function(){
+      fecharForm();
+      toast(editandoId ? 'Atração atualizada' : 'Atração criada');
+      carregar();
+    }).catch(function(e){ $('form-err').textContent = e.message; });
+  };
+
+  if(tipo === 'photo' && arquivoBase64){
+    api('/api/upload', { method:'POST', body:{ data: arquivoBase64 } })
+      .then(function(r){ finalizar(r.url); })
+      .catch(function(e){ $('form-err').textContent = e.message; });
+  } else if(tipo === 'photo' && !url){
+    $('form-err').textContent = 'Cole a URL da foto ou envie um arquivo';
+  } else {
+    finalizar(url);
+  }
+}
+
+/* ---------- programação ---------- */
+var programacaoData = [];
+
+function carregarProgramacao(){
+  api('/api/programacao').then(function(dias){
+    programacaoData = dias || [];
+    renderProgramacao();
+  }).catch(function(e){ toast('Erro ao carregar programação: ' + e.message, true); });
+}
+
+function renderProgramacao(){
+  var container = $('programacao-container');
+  if(!programacaoData.length){
+    container.innerHTML = '<div class="empty">Nenhum dia cadastrado na programação. Clique em “+ Adicionar Dia”.</div>';
+    return;
+  }
+  container.innerHTML = '';
+  programacaoData.forEach(function(dia, dIdx){
+    var card = document.createElement('div');
+    card.className = 'prog-day-card';
+    var itensHTML = (dia.itens || []).map(function(it, iIdx){
+      return '<div class="prog-item-row">' +
+        '<input type="text" class="hora" value="' + esc(it.hora) + '" placeholder="Horário (ex.: 14h)" data-didx="' + dIdx + '" data-iidx="' + iIdx + '" data-campo="hora">' +
+        '<input type="text" value="' + esc(it.titulo) + '" placeholder="Título (ex.: Tropeiro 57)" data-didx="' + dIdx + '" data-iidx="' + iIdx + '" data-campo="titulo">' +
+        '<input type="text" value="' + esc(it.local) + '" placeholder="Local/Palco (ex.: Palco principal)" data-didx="' + dIdx + '" data-iidx="' + iIdx + '" data-campo="local">' +
+        '<button class="arrow" data-prog-action="del-item" data-didx="' + dIdx + '" data-iidx="' + iIdx + '" title="Excluir horário">✕</button>' +
+      '</div>';
+    }).join('');
+
+    card.innerHTML =
+      '<div class="grid2" style="margin-bottom:14px">' +
+        '<div class="field"><label>Número do Dia (ex.: 13)</label><input type="text" value="' + esc(dia.dia_num) + '" data-didx="' + dIdx + '" data-dia-campo="dia_num"></div>' +
+        '<div class="field"><label>Dia da Semana (ex.: Sábado)</label><input type="text" value="' + esc(dia.dia_nome) + '" data-didx="' + dIdx + '" data-dia-campo="dia_nome"></div>' +
+        '<div class="field" style="grid-column:span 2"><label>Mês / Ano (ex.: Junho · 2026)</label><input type="text" value="' + esc(dia.mes_ano) + '" data-didx="' + dIdx + '" data-dia-campo="mes_ano"></div>' +
+      '</div>' +
+      '<h4 style="font-size:14px;color:var(--amarelo);margin-bottom:10px">Horários / Atrações do Dia</h4>' +
+      '<div class="prog-itens-list">' + itensHTML + '</div>' +
+      '<div style="display:flex;justify-content:space-between;margin-top:14px">' +
+        '<button class="btn btn-fantasma btn-sm" data-prog-action="add-item" data-didx="' + dIdx + '">+ Adicionar Horário</button>' +
+        '<button class="btn btn-vermelho btn-sm" data-prog-action="del-dia" data-didx="' + dIdx + '">Excluir Dia</button>' +
+      '</div>';
+    container.appendChild(card);
+  });
+}
+
+$('programacao-container').addEventListener('input', function(e){
+  var dIdx = e.target.getAttribute('data-didx');
+  if(dIdx === null) return;
+  dIdx = parseInt(dIdx, 10);
+
+  var diaCampo = e.target.getAttribute('data-dia-campo');
+  if(diaCampo){
+    programacaoData[dIdx][diaCampo] = e.target.value;
+    return;
+  }
+
+  var iIdx = e.target.getAttribute('data-iidx');
+  var campo = e.target.getAttribute('data-campo');
+  if(iIdx !== null && campo){
+    iIdx = parseInt(iIdx, 10);
+    programacaoData[dIdx].itens[iIdx][campo] = e.target.value;
+  }
+});
+
+$('programacao-container').addEventListener('click', function(e){
+  var btn = e.target.closest('[data-prog-action]');
+  if(!btn) return;
+  var action = btn.getAttribute('data-prog-action');
+  var dIdx = parseInt(btn.getAttribute('data-didx'), 10);
+
+  if(action === 'add-item'){
+    programacaoData[dIdx].itens.push({ id: 'p' + Date.now(), hora: '', titulo: '', local: '' });
+    renderProgramacao();
+  } else if(action === 'del-item'){
+    var iIdx = parseInt(btn.getAttribute('data-iidx'), 10);
+    programacaoData[dIdx].itens.splice(iIdx, 1);
+    renderProgramacao();
+  } else if(action === 'del-dia'){
+    if(!confirm('Excluir este dia inteiro da programação?')) return;
+    programacaoData.splice(dIdx, 1);
+    renderProgramacao();
+  }
+});
+
+$('btn-add-dia').addEventListener('click', function(){
+  programacaoData.push({
+    id: 'dia-' + (programacaoData.length + 1),
+    dia_num: '',
+    dia_nome: '',
+    mes_ano: 'Junho · 2026',
+    itens: []
+  });
+  renderProgramacao();
+});
+
+$('btn-salvar-prog').addEventListener('click', function(){
+  api('/api/programacao', { method: 'PUT', body: programacaoData })
+    .then(function(){ toast('Programação salva com sucesso!'); })
+    .catch(function(e){ toast('Erro ao salvar: ' + e.message, true); });
+});
+
+/* ---------- textos das seções ---------- */
+function carregarSecoes(){
+  api('/api/secoes').then(function(sec){
+    sec = sec || {};
+    if(sec.hero){
+      $('sec-hero-eyebrow-input').value = sec.hero.eyebrow || '';
+      $('sec-hero-desc-input').value = sec.hero.descricao || '';
+      heroImagens = (sec.hero.imagens && Array.isArray(sec.hero.imagens)) ? sec.hero.imagens.slice() : [];
+      renderHeroImagens();
+    }
+    if(sec.sobre){
+      $('sec-sobre-titulo-input').value = sec.sobre.titulo || '';
+      $('sec-sobre-desc-input').value = sec.sobre.descricao || '';
+      var imgs = (sec.sobre.imagens && Array.isArray(sec.sobre.imagens)) ? sec.sobre.imagens : [];
+      $('sec-sobre-img1-input').value = imgs[0] || '';
+      $('sec-sobre-img1-prev').src = imgs[0] || '';
+      $('sec-sobre-img2-input').value = imgs[1] || '';
+      $('sec-sobre-img2-prev').src = imgs[1] || '';
+      $('sec-sobre-img3-input').value = imgs[2] || '';
+      $('sec-sobre-img3-prev').src = imgs[2] || '';
+    }
+    if(sec.pilares){
+      $('sec-pilares-eyebrow-input').value = sec.pilares.eyebrow || '';
+      $('sec-pilares-titulo-input').value = sec.pilares.titulo || '';
+    }
+    if(sec.gastronomia){
+      $('sec-gastronomia-eyebrow-input').value = sec.gastronomia.eyebrow || '';
+      $('sec-gastronomia-titulo-input').value = sec.gastronomia.titulo || '';
+      $('sec-gastronomia-desc-input').value = sec.gastronomia.descricao || '';
+      $('sec-gastronomia-visivel-input').checked = sec.gastronomia.visivel !== false;
+    }
+    if(sec.inscricao){
+      $('sec-inscricao-titulo-input').value = sec.inscricao.titulo || '';
+      $('sec-inscricao-desc-input').value = sec.inscricao.descricao || '';
+    }
+    if(sec.footer){
+      $('sec-footer-texto-input').value = sec.footer.marca_texto || '';
+    }
+  }).catch(function(e){ toast('Erro ao carregar textos: ' + e.message, true); });
+}
+
+$('btn-salvar-secoes').addEventListener('click', function(){
+  var dados = {
+    hero: {
+      eyebrow: $('sec-hero-eyebrow-input').value.trim(),
+      descricao: $('sec-hero-desc-input').value.trim(),
+      imagens: heroImagens.slice()
+    },
+    sobre: {
+      titulo: $('sec-sobre-titulo-input').value.trim(),
+      descricao: $('sec-sobre-desc-input').value.trim(),
+      imagens: [
+        $('sec-sobre-img1-input').value.trim(),
+        $('sec-sobre-img2-input').value.trim(),
+        $('sec-sobre-img3-input').value.trim()
+      ].filter(Boolean)
+    },
+    pilares: {
+      eyebrow: $('sec-pilares-eyebrow-input').value.trim(),
+      titulo: $('sec-pilares-titulo-input').value.trim()
+    },
+    gastronomia: {
+      eyebrow: $('sec-gastronomia-eyebrow-input').value.trim(),
+      titulo: $('sec-gastronomia-titulo-input').value.trim(),
+      descricao: $('sec-gastronomia-desc-input').value.trim(),
+      visivel: $('sec-gastronomia-visivel-input').checked
+    },
+    inscricao: {
+      titulo: $('sec-inscricao-titulo-input').value.trim(),
+      descricao: $('sec-inscricao-desc-input').value.trim()
+    },
+    footer: {
+      marca_texto: $('sec-footer-texto-input').value.trim()
+    }
+  };
+
+  api('/api/secoes', { method: 'PUT', body: dados })
+    .then(function(){ toast('Textos das seções salvos com sucesso!'); })
+    .catch(function(e){ toast('Erro ao salvar textos: ' + e.message, true); });
+});
+
+/* ---------- gerenciamento de imagens do hero ---------- */
+function renderHeroImagens(){
+  var list = $('hero-imgs-list');
+  if(!list) return;
+  if(heroImagens.length === 0){
+    list.innerHTML = '<div class="empty" style="padding:20px">Nenhuma imagem adicionada ao carrossel. Adicione URLs ou faça upload do computador.</div>';
+    return;
+  }
+  var html = '';
+  heroImagens.forEach(function(url, i){
+    html += '<div class="hero-img-item" data-idx="' + i + '">';
+    html += '<img class="hero-img-thumb" src="' + esc(url) + '" alt="Imagem ' + (i+1) + '" onerror="this.onerror=null;this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%2256%22 style=%22background:%23222;fill:%23fff;font-size:12px%22><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22>🖼️ Imagem</text></svg>\'">';
+    html += '<span class="hero-img-url">' + esc(url) + '</span>';
+    html += '<div class="hero-img-actions">';
+    html += '<button class="hero-img-order" onclick="heroImgMove(' + i + ',-1)" ' + (i === 0 ? 'disabled' : '') + ' title="Mover para cima" aria-label="Mover para cima">&#x25B2;</button>';
+    html += '<button class="hero-img-order" onclick="heroImgMove(' + i + ',1)" ' + (i === heroImagens.length - 1 ? 'disabled' : '') + ' title="Mover para baixo" aria-label="Mover para baixo">&#x25BC;</button>';
+    html += '<button class="hero-img-rm" onclick="heroImgRemove(' + i + ')" title="Remover" aria-label="Remover imagem">&#x2715;</button>';
+    html += '</div></div>';
+  });
+  list.innerHTML = html;
+}
+
+function heroImgMove(idx, dir){
+  var newIdx = idx + dir;
+  if(newIdx < 0 || newIdx >= heroImagens.length) return;
+  var tmp = heroImagens[idx];
+  heroImagens[idx] = heroImagens[newIdx];
+  heroImagens[newIdx] = tmp;
+  renderHeroImagens();
+}
+
+function heroImgRemove(idx){
+  heroImagens.splice(idx, 1);
+  renderHeroImagens();
+  toast('Imagem removida. Clique em "Salvar Textos" para confirmar.');
+}
+
+$('btn-hero-add-url').addEventListener('click', function(){
+  var input = $('hero-img-url-input');
+  var url = input.value.trim();
+  if(!url){
+    toast('Cole uma URL de imagem válida', true);
+    return;
+  }
+  heroImagens.push(url);
+  input.value = '';
+  renderHeroImagens();
+  toast('Imagem adicionada! Clique em "Salvar Textos" para confirmar.');
+});
+
+function processAndUploadFile(file){
+  var status = $('hero-upload-status');
+  if(!file) return;
+  status.textContent = '⏳ Otimizando imagem...';
+
+  // Otimiza/redimensiona imagens grandes (> 1920px) no próprio navegador antes do envio
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var img = new Image();
+    img.onload = function(){
+      var maxW = 1920;
+      var canvas = document.createElement('canvas');
+      var w = img.width;
+      var h = img.height;
+      if(w > maxW){
+        h = Math.round((h * maxW) / w);
+        w = maxW;
+      }
+      canvas.width = w;
+      canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+      
+      status.textContent = '⏳ Enviando para o servidor...';
+      api('/api/upload', {
+        method: 'POST',
+        body: { data: dataUrl }
+      }).then(function(res){
+        heroImagens.push(res.url);
+        renderHeroImagens();
+        status.textContent = '✅ Upload concluído! Clique em "Salvar Imagens do Hero".';
+        toast('Imagem enviada! Clique em "Salvar Imagens do Hero" para publicar.');
+      }).catch(function(err){
+        status.textContent = '❌ Erro: ' + err.message;
+        toast('Erro no upload: ' + err.message, true);
+      });
+    };
+    img.onerror = function(){
+      // Fallback para envio direto se a pré-visualização no canvas falhar
+      status.textContent = '⏳ Enviando para o servidor...';
+      api('/api/upload', {
+        method: 'POST',
+        body: { data: e.target.result }
+      }).then(function(res){
+        heroImagens.push(res.url);
+        renderHeroImagens();
+        status.textContent = '✅ Upload concluído! Clique em "Salvar Imagens do Hero".';
+        toast('Imagem enviada! Clique em "Salvar Imagens do Hero" para publicar.');
+      }).catch(function(err){
+        status.textContent = '❌ Erro: ' + err.message;
+        toast('Erro no upload: ' + err.message, true);
+      });
+    };
+    img.src = e.target.result;
+  };
+  reader.onerror = function(){
+    status.textContent = '❌ Erro ao ler arquivo';
+    toast('Não foi possível ler o arquivo selecionado', true);
+  };
+  reader.readAsDataURL(file);
+}
+
+$('hero-img-file').addEventListener('change', function(e){
+  var file = e.target.files[0];
+  if(file){
+    processAndUploadFile(file);
+  }
+  e.target.value = '';
+});
+
+// Event listeners para upload das 3 imagens da seção 'Sobre'
+[1, 2, 3].forEach(function(num){
+  var fileInput = $('sec-sobre-img' + num + '-file');
+  var textInput = $('sec-sobre-img' + num + '-input');
+  var prevImg = $('sec-sobre-img' + num + '-prev');
+  
+  if(textInput && prevImg){
+    textInput.addEventListener('input', function(){
+      prevImg.src = textInput.value.trim();
+    });
+  }
+
+  if(fileInput){
+    fileInput.addEventListener('change', function(e){
+      var file = e.target.files[0];
+      if(!file) return;
+      toast('Otimizando e enviando imagem ' + num + '...');
+      
+      // Usa a mesma função otimizada com canvas compressor
+      var reader = new FileReader();
+      reader.onload = function(evt){
+        var img = new Image();
+        img.onload = function(){
+          var canvas = document.createElement('canvas');
+          var maxW = 1200;
+          var w = img.width, h = img.height;
+          if(w > maxW){ h = Math.round((h * maxW) / w); w = maxW; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          
+          api('/api/upload', { method: 'POST', body: { data: dataUrl } })
+            .then(function(res){
+              textInput.value = res.url;
+              prevImg.src = res.url;
+              toast('Imagem ' + num + ' enviada com sucesso!');
+            }).catch(function(err){ toast('Erro no upload: ' + err.message, true); });
+        };
+        img.onerror = function(){
+          api('/api/upload', { method: 'POST', body: { data: evt.target.result } })
+            .then(function(res){
+              textInput.value = res.url;
+              prevImg.src = res.url;
+              toast('Imagem ' + num + ' enviada!');
+            }).catch(function(err){ toast('Erro no upload: ' + err.message, true); });
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+      e.target.value = '';
+    });
+  }
+});
+
+var btnSalvarHero = $('btn-salvar-hero-imgs');
+if(btnSalvarHero){
+  btnSalvarHero.addEventListener('click', function(){
+    $('btn-salvar-secoes').click();
+  });
+}
+
+/* ---------- edições ---------- */
+var edicoesData = [];
+
+function carregarEdicoes(){
+  api('/api/edicoes').then(function(eds){
+    edicoesData = eds || [];
+    renderEdicoes();
+    
+    var select = $('f-edicao');
+    select.innerHTML = '';
+    edicoesData.forEach(function(ed){
+      var opt = document.createElement('option');
+      opt.value = ed.id;
+      opt.textContent = (ed.ano ? ed.ano + ' - ' : '') + ed.nome;
+      select.appendChild(opt);
+    });
+  }).catch(function(e){ toast('Erro ao carregar edições: ' + e.message, true); });
+}
+
+function renderEdicoes(){
+  var infoAtiva = $('edicao-ativa-info');
+  var lista = $('edicoes-lista');
+  
+  var ativa = edicoesData.find(function(e) { return e.status === 'ativa'; });
+  
+  if(ativa){
+    infoAtiva.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;width:100%;flex-wrap:wrap;gap:12px">' +
+      '<div><strong>' + (ativa.ano ? esc(ativa.ano) + ' - ' : '') + esc(ativa.nome) + '</strong> <span style="font-size:14px;color:rgba(255,255,255,0.7)">(' + esc(ativa.subtitulo) + ')</span> <span class="edicao-badge ativa">Ativa</span></div>' +
+      '<button class="btn btn-vermelho btn-sm" id="btn-encerrar-ativa">🏁 Encerrar Edição Ativa</button>' +
+    '</div>';
+    setTimeout(function(){
+      var btnEnc = $('btn-encerrar-ativa');
+      if(btnEnc){
+        btnEnc.onclick = function(){
+          if(!confirm('Encerrar a edição ativa? Ela será movida para as Edições Anteriores e o site entrará no modo "Em Breve" até que uma nova edição seja ativada.')) return;
+          api('/api/edicoes/encerrar', { method: 'PUT' })
+            .then(function(){
+              toast('Edição ativa encerrada! O site está agora no modo "Em Breve".');
+              carregarEdicoes();
+              carregar();
+            })
+            .catch(function(e){ toast('Erro ao encerrar edição: ' + e.message, true); });
+        };
+      }
+    }, 0);
+  } else {
+    infoAtiva.innerHTML = '<div style="display:flex;align-items:center;gap:10px"><span style="color:var(--amarelo);font-weight:700">⏳ Modo "Em Breve" ativo</span> <span style="font-size:13px;color:rgba(255,255,255,0.6)">(Nenhuma edição ativa no momento — o site exibe aviso da próxima edição)</span></div>';
+  }
+  
+  if(!edicoesData.length){
+    lista.innerHTML = '<div class="empty">Nenhuma edição cadastrada.</div>';
+    return;
+  }
+  
+  lista.innerHTML = '';
+  edicoesData.forEach(function(ed){
+    var item = document.createElement('div');
+    item.className = 'edicao-row';
+    
+    var badgeClass = ed.status === 'ativa' ? 'ativa' : 'arquivada';
+    var badgeText = ed.status === 'ativa' ? 'Ativa' : 'Arquivada';
+    var acaoBtn = ed.status === 'ativa'
+      ? ''
+      : '<button class="btn btn-fantasma btn-sm" data-edicao-action="ativar" data-id="' + esc(ed.id) + '">Tornar Ativa</button>';
+      
+    item.innerHTML = 
+      '<div class="edicao-info-meta">' +
+        '<div style="display:flex;align-items:center;gap:10px"><strong>' + (ed.ano ? esc(ed.ano) + ' · ' : '') + esc(ed.nome) + '</strong> <span class="edicao-badge ' + badgeClass + '">' + badgeText + '</span></div>' +
+        '<div style="font-size:13px;color:rgba(255,255,255,0.6)">' + esc(ed.subtitulo) + '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px">' +
+        acaoBtn +
+        '<button class="btn btn-vermelho btn-sm" data-edicao-action="excluir" data-id="' + esc(ed.id) + '">Excluir</button>' +
+      '</div>';
+    lista.appendChild(item);
+  });
+}
+
+$('edicoes-lista').addEventListener('click', function(e){
+  var btn = e.target.closest('[data-edicao-action]');
+  if(!btn) return;
+  var action = btn.getAttribute('data-edicao-action');
+  var id = btn.getAttribute('data-id');
+  
+  if(action === 'ativar'){
+    if(!confirm('Tornar esta edição a ativa? As demais serão arquivadas.')) return;
+    var ed = edicoesData.find(function(x){ return x.id === id; });
+    if(ed){
+      api('/api/edicoes/arquivar', { method: 'PUT', body: ed })
+        .then(function(){
+          toast('Edição ativada!');
+          carregarEdicoes();
+          carregar();
+        })
+        .catch(function(e){ toast('Erro ao ativar edição: ' + e.message, true); });
+    }
+  } else if(action === 'excluir'){
+    if(!confirm('Excluir esta edição? As atrações relacionadas continuarão no banco, mas a edição não será listada.')) return;
+    var idx = edicoesData.findIndex(function(x){ return x.id === id; });
+    if(idx !== -1){
+      if(edicoesData[idx].status === 'ativa'){
+        toast('Não é possível excluir a edição ativa!', true);
+        return;
+      }
+      edicoesData.splice(idx, 1);
+      api('/api/edicoes', { method: 'PUT', body: edicoesData })
+        .then(function(){ 
+          toast('Edição excluída');
+          carregarEdicoes(); 
+        })
+        .catch(function(e){ toast('Erro ao excluir: ' + e.message, true); });
+    }
+  }
+});
+
+$('btn-nova-edicao').addEventListener('click', function(){
+  $('ed-ano').value = '';
+  $('ed-nome').value = '';
+  $('ed-subtitulo').value = '';
+  $('ed-ativa').checked = false;
+  $('modal-edicao-bg').classList.add('open');
+});
+
+$('btn-cancela-edicao').addEventListener('click', function(){
+  $('modal-edicao-bg').classList.remove('open');
+});
+
+$('btn-salva-edicao').addEventListener('click', function(){
+  var ano = $('ed-ano').value.trim();
+  var nome = $('ed-nome').value.trim();
+  var subtitulo = $('ed-subtitulo').value.trim();
+  var ativa = $('ed-ativa').checked;
+  
+  if(!nome || !subtitulo){
+    toast('Os campos Nome da Edição e Subtítulo são obrigatórios', true);
+    return;
+  }
+  
+  var novaEd = {
+    ano: ano,
+    nome: nome,
+    subtitulo: subtitulo,
+    status: ativa ? 'ativa' : 'arquivada'
+  };
+  
+  var promise;
+  if(ativa){
+    promise = api('/api/edicoes/arquivar', { method: 'PUT', body: novaEd });
+  } else {
+    promise = api('/api/edicoes', { method: 'POST', body: novaEd });
+  }
+  
+  promise.then(function(){
+    $('modal-edicao-bg').classList.remove('open');
+    toast('Edição criada com sucesso!');
+    carregarEdicoes();
+    if(ativa) carregar();
+  }).catch(function(e){
+    toast(e.message, true);
+  });
+});
+
+/* ---------- boot ---------- */
+if(TOKEN){
+  api('/api/verify')
+    .then(entrar)
+    .catch(function(){
+      TOKEN = '';
+      localStorage.removeItem('qs_admin_token');
+      $('login-view').style.display = 'flex';
+      $('panel-view').style.display = 'none';
+    });
+} else {
+  $('login-view').style.display = 'flex';
+  $('panel-view').style.display = 'none';
+}
+</script>
+</body>
+</html>

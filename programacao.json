@@ -1,0 +1,78 @@
+[
+  {
+    "id": "dia-1",
+    "dia_num": "19",
+    "dia_nome": "Sábado",
+    "mes_ano": "Setembro· 2026",
+    "itens": [
+      {
+        "id": "p1",
+        "hora": "14h",
+        "local": "Palco principal",
+        "titulo": "Abertura do festival"
+      },
+      {
+        "id": "p2",
+        "hora": "15h",
+        "local": "Espaço oficinas",
+        "titulo": "Oficina de Culinária Regional"
+      },
+      {
+        "id": "p3",
+        "hora": "17h",
+        "local": "Espaço cultural",
+        "titulo": "Vidas em Cartazes (Mostra de Cinema)"
+      },
+      {
+        "id": "p4",
+        "hora": "19h",
+        "local": "Palco principal",
+        "titulo": "Pagodinho da Gente"
+      },
+      {
+        "id": "p5",
+        "hora": "21h",
+        "local": "Palco principal",
+        "titulo": "Protocolo Social e Robozão"
+      }
+    ]
+  },
+  {
+    "id": "dia-2",
+    "dia_num": "20",
+    "dia_nome": "Domingo",
+    "mes_ano": "Setembro· 2026",
+    "itens": [
+      {
+        "id": "p6",
+        "hora": "13h",
+        "local": "Todos os palcos",
+        "titulo": "Abertura dos espaços"
+      },
+      {
+        "id": "p7",
+        "hora": "14h30",
+        "local": "Palco principal",
+        "titulo": "DJ Piu Piu "
+      },
+      {
+        "id": "p8",
+        "hora": "16h",
+        "local": "Espaço oficinas",
+        "titulo": "Oficina de Capoeira"
+      },
+      {
+        "id": "p9",
+        "hora": "18h",
+        "local": "Palco principal",
+        "titulo": "Jurandy e seus Teclados"
+      },
+      {
+        "id": "p10",
+        "hora": "20h",
+        "local": "Palco principal",
+        "titulo": "Encerramento festivo"
+      }
+    ]
+  }
+]

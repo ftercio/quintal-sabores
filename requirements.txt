@@ -1,0 +1,1 @@
+# Quintal dos Sabores - Servidor Python usa biblioteca padrão
