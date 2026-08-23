@@ -539,8 +539,8 @@ def validate_secoes(data):
             val = data[sec].get(f)
             if not isinstance(val, str):
                 return f"Campo '{f}' na seção '{sec}' deve ser texto"
-    # Validação opcional: hero.imagens e sobre.imagens devem ser listas de strings (URLs)
-    for sec_key in ["hero", "sobre"]:
+    # Validação opcional: hero.imagens, sobre.imagens, galeria.imagens e experiencias.imagens devem ser listas de strings (URLs)
+    for sec_key in ["hero", "sobre", "galeria", "experiencias"]:
         imgs = data.get(sec_key, {}).get("imagens")
         if imgs is not None:
             if not isinstance(imgs, list):

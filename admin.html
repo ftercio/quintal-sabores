@@ -272,8 +272,8 @@ button{cursor:pointer;border:none;font-family:inherit}
       </div>
 
       <div class="card-box">
-        <h3>Nossos Pilares</h3>
-        <div class="grid2">
+        <h3>Nossos Pilares & Experiências</h3>
+        <div class="grid2" style="margin-bottom:16px">
           <div class="field">
             <label>Eyebrow / Título Superior</label>
             <input type="text" id="sec-pilares-eyebrow-input" placeholder="Ex.: O QUE VOCÊ ENCONTRA NO QUINTAL">
@@ -282,6 +282,61 @@ button{cursor:pointer;border:none;font-family:inherit}
             <label>Subtítulo do Cabeçalho</label>
             <input type="text" id="sec-pilares-titulo-input" placeholder="Ex.: Mais do que uma festa...">
           </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border);padding-top:16px">
+          <label style="font-weight:600;display:block;margin-bottom:10px">Imagens das Experiências ("Muito Além de Comer Bem")</label>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px">
+            <!-- Imagem 1 -->
+            <div class="field">
+              <label style="font-size:12px;color:var(--text-muted)">1. Shows e Palco Livre</label>
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+                <img id="sec-exp-img1-prev" src="" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:#eee;border:1px solid var(--border)">
+                <input type="file" id="sec-exp-img1-file" accept="image/*" style="display:none">
+                <button type="button" class="btn btn-sm btn-sec" onclick="$('sec-exp-img1-file').click()">📁 Upload</button>
+              </div>
+              <input type="text" id="sec-exp-img1-input" placeholder="URL da imagem 1">
+            </div>
+            <!-- Imagem 2 -->
+            <div class="field">
+              <label style="font-size:12px;color:var(--text-muted)">2. Apresentações Culturais</label>
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+                <img id="sec-exp-img2-prev" src="" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:#eee;border:1px solid var(--border)">
+                <input type="file" id="sec-exp-img2-file" accept="image/*" style="display:none">
+                <button type="button" class="btn btn-sm btn-sec" onclick="$('sec-exp-img2-file').click()">📁 Upload</button>
+              </div>
+              <input type="text" id="sec-exp-img2-input" placeholder="URL da imagem 2">
+            </div>
+            <!-- Imagem 3 -->
+            <div class="field">
+              <label style="font-size:12px;color:var(--text-muted)">3. Oficinas e Convivência</label>
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+                <img id="sec-exp-img3-prev" src="" style="width:60px;height:40px;object-fit:cover;border-radius:4px;background:#eee;border:1px solid var(--border)">
+                <input type="file" id="sec-exp-img3-file" accept="image/*" style="display:none">
+                <button type="button" class="btn btn-sm btn-sec" onclick="$('sec-exp-img3-file').click()">📁 Upload</button>
+              </div>
+              <input type="text" id="sec-exp-img3-input" placeholder="URL da imagem 3">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <h3>O Festival em Imagens (Galeria do Carrossel)</h3>
+        <p class="hint" style="margin-bottom:12px">Gerencie as fotos da galeria carrossel. Adicione novas fotos ou remova existentes.</p>
+        <div id="galeria-imgs-list" class="hero-imgs-list"></div>
+        <div class="hero-img-add-row">
+          <div class="field">
+            <label>Adicionar imagem (URL)</label>
+            <input type="url" id="galeria-img-url-input" placeholder="https://... (cole a URL da foto)">
+          </div>
+          <button class="btn btn-fantasma btn-sm" id="btn-galeria-add-url" style="height:42px;white-space:nowrap">+ Adicionar URL</button>
+        </div>
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <label class="btn btn-fantasma btn-sm" for="galeria-img-file" style="cursor:pointer;margin:0;height:40px;display:inline-flex;align-items:center">📁 Upload do Computador</label>
+          <input type="file" id="galeria-img-file" accept="image/*" style="display:none">
+          <button class="btn btn-verde btn-sm" id="btn-salvar-galeria-imgs" style="height:40px">💾 Salvar Fotos da Galeria</button>
+          <span id="galeria-upload-status" class="hint" style="font-weight:600;color:var(--amarelo)"></span>
         </div>
       </div>
 
@@ -327,6 +382,10 @@ button{cursor:pointer;border:none;font-family:inherit}
           <label>Texto da Marca / Institucional</label>
           <textarea id="sec-footer-texto-input" rows="2"></textarea>
         </div>
+      </div>
+
+      <div style="margin-top:24px;text-align:right">
+        <button class="btn btn-verde btn-lg" id="btn-salvar-secoes-bottom" style="font-size:16px;padding:14px 32px;cursor:pointer">💾 Salvar Todos os Textos e Imagens das Seções</button>
       </div>
     </div>
 
@@ -867,6 +926,19 @@ function carregarSecoes(){
       $('sec-pilares-eyebrow-input').value = sec.pilares.eyebrow || '';
       $('sec-pilares-titulo-input').value = sec.pilares.titulo || '';
     }
+    if(sec.experiencias){
+      var expImgs = (sec.experiencias.imagens && Array.isArray(sec.experiencias.imagens)) ? sec.experiencias.imagens : [];
+      $('sec-exp-img1-input').value = expImgs[0] || '';
+      $('sec-exp-img1-prev').src = expImgs[0] || '';
+      $('sec-exp-img2-input').value = expImgs[1] || '';
+      $('sec-exp-img2-prev').src = expImgs[1] || '';
+      $('sec-exp-img3-input').value = expImgs[2] || '';
+      $('sec-exp-img3-prev').src = expImgs[2] || '';
+    }
+    if(sec.galeria){
+      galeriaImagens = (sec.galeria.imagens && Array.isArray(sec.galeria.imagens)) ? sec.galeria.imagens.slice() : [];
+      renderGaleriaImagens();
+    }
     if(sec.gastronomia){
       $('sec-gastronomia-eyebrow-input').value = sec.gastronomia.eyebrow || '';
       $('sec-gastronomia-titulo-input').value = sec.gastronomia.titulo || '';
@@ -883,7 +955,7 @@ function carregarSecoes(){
   }).catch(function(e){ toast('Erro ao carregar textos: ' + e.message, true); });
 }
 
-$('btn-salvar-secoes').addEventListener('click', function(){
+function salvarSecoesTodas(){
   var dados = {
     hero: {
       eyebrow: $('sec-hero-eyebrow-input').value.trim(),
@@ -903,6 +975,16 @@ $('btn-salvar-secoes').addEventListener('click', function(){
       eyebrow: $('sec-pilares-eyebrow-input').value.trim(),
       titulo: $('sec-pilares-titulo-input').value.trim()
     },
+    experiencias: {
+      imagens: [
+        $('sec-exp-img1-input').value.trim(),
+        $('sec-exp-img2-input').value.trim(),
+        $('sec-exp-img3-input').value.trim()
+      ].filter(Boolean)
+    },
+    galeria: {
+      imagens: galeriaImagens.slice()
+    },
     gastronomia: {
       eyebrow: $('sec-gastronomia-eyebrow-input').value.trim(),
       titulo: $('sec-gastronomia-titulo-input').value.trim(),
@@ -919,9 +1001,12 @@ $('btn-salvar-secoes').addEventListener('click', function(){
   };
 
   api('/api/secoes', { method: 'PUT', body: dados })
-    .then(function(){ toast('Textos das seções salvos com sucesso!'); })
-    .catch(function(e){ toast('Erro ao salvar textos: ' + e.message, true); });
-});
+    .then(function(){ toast('Textos e imagens salvos com sucesso!'); })
+    .catch(function(e){ toast('Erro ao salvar: ' + e.message, true); });
+}
+
+$('btn-salvar-secoes').addEventListener('click', salvarSecoesTodas);
+if($('btn-salvar-secoes-bottom')) $('btn-salvar-secoes-bottom').addEventListener('click', salvarSecoesTodas);
 
 /* ---------- gerenciamento de imagens do hero ---------- */
 function renderHeroImagens(){
@@ -1062,7 +1147,6 @@ $('hero-img-file').addEventListener('change', function(e){
       if(!file) return;
       toast('Otimizando e enviando imagem ' + num + '...');
       
-      // Usa a mesma função otimizada com canvas compressor
       var reader = new FileReader();
       reader.onload = function(evt){
         var img = new Image();
@@ -1097,6 +1181,157 @@ $('hero-img-file').addEventListener('change', function(e){
     });
   }
 });
+
+// Event listeners para upload das 3 imagens da seção 'Experiências'
+[1, 2, 3].forEach(function(num){
+  var fileInput = $('sec-exp-img' + num + '-file');
+  var textInput = $('sec-exp-img' + num + '-input');
+  var prevImg = $('sec-exp-img' + num + '-prev');
+  
+  if(textInput && prevImg){
+    textInput.addEventListener('input', function(){
+      prevImg.src = textInput.value.trim();
+    });
+  }
+
+  if(fileInput){
+    fileInput.addEventListener('change', function(e){
+      var file = e.target.files[0];
+      if(!file) return;
+      toast('Otimizando e enviando imagem ' + num + '...');
+      
+      var reader = new FileReader();
+      reader.onload = function(evt){
+        var img = new Image();
+        img.onload = function(){
+          var canvas = document.createElement('canvas');
+          var maxW = 1200;
+          var w = img.width, h = img.height;
+          if(w > maxW){ h = Math.round((h * maxW) / w); w = maxW; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          
+          api('/api/upload', { method: 'POST', body: { data: dataUrl } })
+            .then(function(res){
+              textInput.value = res.url;
+              prevImg.src = res.url;
+              toast('Imagem ' + num + ' enviada com sucesso!');
+            }).catch(function(err){ toast('Erro no upload: ' + err.message, true); });
+        };
+        img.onerror = function(){
+          api('/api/upload', { method: 'POST', body: { data: evt.target.result } })
+            .then(function(res){
+              textInput.value = res.url;
+              prevImg.src = res.url;
+              toast('Imagem ' + num + ' enviada!');
+            }).catch(function(err){ toast('Erro no upload: ' + err.message, true); });
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+      e.target.value = '';
+    });
+  }
+});
+
+/* ---------- gerenciamento de imagens da galeria ---------- */
+var galeriaImagens = [];
+
+function renderGaleriaImagens(){
+  var list = $('galeria-imgs-list');
+  if(!list) return;
+  if(galeriaImagens.length === 0){
+    list.innerHTML = '<div class="empty" style="padding:20px">Nenhuma imagem na galeria. Adicione URLs ou faça upload do computador.</div>';
+    return;
+  }
+  var html = '';
+  galeriaImagens.forEach(function(url, i){
+    html += '<div class="hero-img-item" data-idx="' + i + '">';
+    html += '<img class="hero-img-thumb" src="' + esc(url) + '" alt="Foto ' + (i+1) + '" onerror="this.onerror=null;this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%2256%22 style=%22background:%23222;fill:%23fff;font-size:12px%22><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22>🖼️ Imagem</text></svg>\'">';
+    html += '<span class="hero-img-url">' + esc(url) + '</span>';
+    html += '<div class="hero-img-actions">';
+    html += '<button class="hero-img-order" onclick="galeriaImgMove(' + i + ',-1)" ' + (i === 0 ? 'disabled' : '') + ' title="Mover para cima" aria-label="Mover para cima">&#x25B2;</button>';
+    html += '<button class="hero-img-order" onclick="galeriaImgMove(' + i + ',1)" ' + (i === galeriaImagens.length - 1 ? 'disabled' : '') + ' title="Mover para baixo" aria-label="Mover para baixo">&#x25BC;</button>';
+    html += '<button class="hero-img-rm" onclick="galeriaImgRemove(' + i + ')" title="Remover" aria-label="Remover imagem">&#x2715;</button>';
+    html += '</div></div>';
+  });
+  list.innerHTML = html;
+}
+
+function galeriaImgMove(idx, dir){
+  var newIdx = idx + dir;
+  if(newIdx < 0 || newIdx >= galeriaImagens.length) return;
+  var tmp = galeriaImagens[idx];
+  galeriaImagens[idx] = galeriaImagens[newIdx];
+  galeriaImagens[newIdx] = tmp;
+  renderGaleriaImagens();
+}
+
+function galeriaImgRemove(idx){
+  galeriaImagens.splice(idx, 1);
+  renderGaleriaImagens();
+  toast('Foto removida da galeria. Clique em "Salvar" para confirmar.');
+}
+
+if($('btn-galeria-add-url')){
+  $('btn-galeria-add-url').addEventListener('click', function(){
+    var input = $('galeria-img-url-input');
+    var url = input.value.trim();
+    if(!url){
+      toast('Cole uma URL de foto válida', true);
+      return;
+    }
+    galeriaImagens.push(url);
+    input.value = '';
+    renderGaleriaImagens();
+    toast('Foto adicionada à galeria!');
+  });
+}
+
+if($('btn-salvar-galeria-imgs')){
+  $('btn-salvar-galeria-imgs').addEventListener('click', function(){
+    salvarSecoesTodas();
+  });
+}
+
+if($('galeria-img-file')){
+  $('galeria-img-file').addEventListener('change', function(e){
+    var file = e.target.files[0];
+    var status = $('galeria-upload-status');
+    if(!file) return;
+    if(status) status.textContent = '⏳ Otimizando foto...';
+    
+    var reader = new FileReader();
+    reader.onload = function(evt){
+      var img = new Image();
+      img.onload = function(){
+        var canvas = document.createElement('canvas');
+        var maxW = 1200;
+        var w = img.width, h = img.height;
+        if(w > maxW){ h = Math.round((h * maxW) / w); w = maxW; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+        
+        if(status) status.textContent = '⏳ Enviando foto...';
+        api('/api/upload', { method: 'POST', body: { data: dataUrl } })
+          .then(function(res){
+            galeriaImagens.push(res.url);
+            renderGaleriaImagens();
+            if(status) status.textContent = '✅ Foto adicionada à galeria!';
+            toast('Foto enviada e adicionada à galeria!');
+          }).catch(function(err){
+            if(status) status.textContent = '❌ Erro: ' + err.message;
+            toast('Erro no upload: ' + err.message, true);
+          });
+      };
+      img.src = evt.target.result;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  });
+}
 
 var btnSalvarHero = $('btn-salvar-hero-imgs');
 if(btnSalvarHero){

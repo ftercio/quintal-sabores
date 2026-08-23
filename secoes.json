@@ -22,6 +22,25 @@
     "eyebrow": "O QUE VOCÊ ENCONTRA NO QUINTAL",
     "titulo": "Mais do que uma festa — um encontro de sabores, talentos e histórias que acontece na periferia."
   },
+  "galeria": {
+    "imagens": [
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=600,h=600,fit=crop/6eeMHGCTGKHVsngE/img_0389-2-bwAt7NDAy9uQCPDr.JPG",
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=600,h=600,fit=crop/6eeMHGCTGKHVsngE/whatsapp-image-2026-06-28-at-21.36.17-VSbfwacAZh5RxgpD.jpeg",
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=600,h=600,fit=crop/6eeMHGCTGKHVsngE/img_0397-fe79gn2yRvLzSMEx.JPG",
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=600,h=600,fit=crop/6eeMHGCTGKHVsngE/img_0387-2-cllCwMOktHedWUfd.JPG",
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=600,h=600,fit=crop/6eeMHGCTGKHVsngE/whatsapp-image-2026-06-29-at-01.04.30-2-tDN5haWGw5wY9lX2.jpeg",
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=600,h=600,fit=crop/6eeMHGCTGKHVsngE/whatsapp-image-2026-06-29-at-01.04.30-dYA4eJHUwXvPvMPQ.jpeg",
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=600,h=600,fit=crop/6eeMHGCTGKHVsngE/whatsapp-image-2026-06-29-at-01.04.30-1-zBw3qbrWGw3ugNox.jpeg",
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=600,h=600,fit=crop/6eeMHGCTGKHVsngE/whatsapp-image-2026-06-28-at-23.53.41-26VZzH8ZhiDZ50Lz.jpeg"
+    ]
+  },
+  "experiencias": {
+    "imagens": [
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=423,fit=crop/6eeMHGCTGKHVsngE/whatsapp-image-2026-06-28-at-21.36.17-VSbfwacAZh5RxgpD.jpeg",
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=385,fit=crop/6eeMHGCTGKHVsngE/img_0387-2-cllCwMOktHedWUfd.JPG",
+      "https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=553,fit=crop/6eeMHGCTGKHVsngE/chatgpt-image-1-de-jul.-de-2026-03_04_52-sm9kTx8oDINXGH17.png"
+    ]
+  },
   "gastronomia": {
     "eyebrow": "Gastronomia",
     "titulo": "A GASTRONOMIA COMO FERRAMENTA DE TRANSFORMAÇÃO SOCIAL",

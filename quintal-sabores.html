@@ -851,19 +851,19 @@ footer{background:var(--preto);padding:60px 7% 32px;}
   </div>
   <div class="exp-grid">
     <div class="exp-card">
-      <img class="exp-img" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=423,fit=crop/6eeMHGCTGKHVsngE/whatsapp-image-2026-06-28-at-21.36.17-VSbfwacAZh5RxgpD.jpeg" width="768" height="423" loading="lazy" decoding="async" alt="Shows">
+      <img id="sec-exp-img1" class="exp-img" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=423,fit=crop/6eeMHGCTGKHVsngE/whatsapp-image-2026-06-28-at-21.36.17-VSbfwacAZh5RxgpD.jpeg" width="768" height="423" loading="lazy" decoding="async" alt="Shows">
       <div class="exp-num" aria-hidden="true">01</div>
       <h3>Shows e palco livre</h3>
       <p>Espaço aberto para talentos da comunidade se apresentarem. Do samba ao rap, criando o clima perfeito.</p>
     </div>
     <div class="exp-card">
-      <img class="exp-img" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=385,fit=crop/6eeMHGCTGKHVsngE/img_0387-2-cllCwMOktHedWUfd.JPG" width="768" height="385" loading="lazy" decoding="async" alt="Cultural">
+      <img id="sec-exp-img2" class="exp-img" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=385,fit=crop/6eeMHGCTGKHVsngE/img_0387-2-cllCwMOktHedWUfd.JPG" width="768" height="385" loading="lazy" decoding="async" alt="Cultural">
       <div class="exp-num" aria-hidden="true">02</div>
       <h3>Apresentações culturais</h3>
       <p>Dança, arte e expressão. Cada apresentação carrega identidade, história e resistência da periferia.</p>
     </div>
     <div class="exp-card">
-      <img class="exp-img" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=553,fit=crop/6eeMHGCTGKHVsngE/chatgpt-image-1-de-jul.-de-2026-03_04_52-sm9kTx8oDINXGH17.png" width="768" height="553" loading="lazy" decoding="async" alt="Oficinas">
+      <img id="sec-exp-img3" class="exp-img" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=553,fit=crop/6eeMHGCTGKHVsngE/chatgpt-image-1-de-jul.-de-2026-03_04_52-sm9kTx8oDINXGH17.png" width="768" height="553" loading="lazy" decoding="async" alt="Oficinas">
       <div class="exp-num" aria-hidden="true">03</div>
       <h3>Oficinas e convivência</h3>
       <p>Aprenda e vivencie a gastronomia de perto com quem vive isso todos os dias.</p>
@@ -1413,6 +1413,19 @@ footer{background:var(--preto);padding:60px 7% 32px;}
       if(sec.pilares){
         if(sec.pilares.eyebrow && $('sec-pilares-eyebrow')) $('sec-pilares-eyebrow').textContent = sec.pilares.eyebrow;
         if(sec.pilares.titulo && $('sec-pilares-titulo')) $('sec-pilares-titulo').textContent = sec.pilares.titulo;
+      }
+      if(sec.experiencias && Array.isArray(sec.experiencias.imagens)){
+        if(sec.experiencias.imagens[0] && $('sec-exp-img1')) $('sec-exp-img1').src = sec.experiencias.imagens[0];
+        if(sec.experiencias.imagens[1] && $('sec-exp-img2')) $('sec-exp-img2').src = sec.experiencias.imagens[1];
+        if(sec.experiencias.imagens[2] && $('sec-exp-img3')) $('sec-exp-img3').src = sec.experiencias.imagens[2];
+      }
+      if(sec.galeria && Array.isArray(sec.galeria.imagens) && sec.galeria.imagens.length > 0){
+        var track = document.querySelector('#galeria .carrossel-track');
+        if(track){
+          track.innerHTML = sec.galeria.imagens.map(function(url){
+            return '<button type="button" class="carrossel-slide" data-full="' + esc(url) + '" aria-label="Ampliar imagem: Festival Quintal dos Sabores"><img src="' + esc(url) + '" width="600" height="600" loading="lazy" decoding="async" alt="Festival Quintal dos Sabores"></button>';
+          }).join('');
+        }
       }
       if(sec.gastronomia){
         if(sec.gastronomia.eyebrow && $('sec-gastronomia-eyebrow')) $('sec-gastronomia-eyebrow').textContent = sec.gastronomia.eyebrow;
