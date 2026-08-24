@@ -1152,17 +1152,27 @@ footer{background:var(--preto);padding:60px 7% 32px;}
   var lightbox = document.getElementById('lightbox');
   if(!track || !lightbox) return;
 
-  // Coleta as imagens únicas (os slides são duplicados para o loop)
-  var slides = Array.prototype.slice.call(track.querySelectorAll('.carrossel-slide'));
-  var seen = {};
   var items = [];
-  slides.forEach(function(s){
-    var full = s.getAttribute('data-full');
-    if(full && !seen[full]){
-      seen[full] = true;
-      items.push({ src: full, alt: (s.querySelector('img') || {}).alt || '' });
-    }
-  });
+
+  // Função reutilizável para (re)coletar as imagens do track
+  function refreshItems(){
+    var slides = Array.prototype.slice.call(track.querySelectorAll('.carrossel-slide'));
+    var seen = {};
+    items = [];
+    slides.forEach(function(s){
+      var full = s.getAttribute('data-full');
+      if(full && !seen[full]){
+        seen[full] = true;
+        items.push({ src: full, alt: (s.querySelector('img') || {}).alt || '' });
+      }
+    });
+  }
+
+  // Coleta inicial (imagens hardcoded no HTML)
+  refreshItems();
+
+  // Expõe a função para ser chamada após atualização dinâmica do carrossel
+  window.__lightboxRefresh = refreshItems;
 
   var imgEl = document.getElementById('lightbox-img');
   var capEl = document.getElementById('lightbox-caption');
@@ -1172,6 +1182,7 @@ footer{background:var(--preto);padding:60px 7% 32px;}
   var lastFocus = null;
 
   function show(i){
+    if(items.length === 0) return;
     current = (i + items.length) % items.length;
     var it = items[current];
     imgEl.src = it.src;
@@ -1181,6 +1192,7 @@ footer{background:var(--preto);padding:60px 7% 32px;}
   }
 
   function open(i){
+    if(items.length === 0) return;
     lastFocus = document.activeElement;
     lightbox.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -1426,6 +1438,8 @@ footer{background:var(--preto);padding:60px 7% 32px;}
           track.innerHTML = sec.galeria.imagens.map(function(url){
             return '<button type="button" class="carrossel-slide" data-full="' + esc(url) + '" aria-label="Ampliar imagem: Festival Quintal dos Sabores"><img src="' + esc(url) + '" width="600" height="600" loading="lazy" decoding="async" alt="Festival Quintal dos Sabores"></button>';
           }).join('');
+          // Atualiza o array de imagens do lightbox para refletir as novas fotos
+          if(typeof window.__lightboxRefresh === 'function') window.__lightboxRefresh();
         }
       }
       if(sec.gastronomia){
