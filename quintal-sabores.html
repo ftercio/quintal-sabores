@@ -435,7 +435,7 @@ nav{
 
 /* ===================== EDIÇÕES ===================== */
 .edicoes{background:var(--cinza-claro);padding:80px 7%;}
-.edicoes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:48px;}
+.edicoes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,320px));gap:12px;margin-top:48px;justify-content:center;}
 .edicao-card{border-radius:8px;overflow:hidden;border:1px solid rgba(26,18,8,0.1);background:var(--branco);transition:transform 0.15s;display:block;}
 .edicao-card:hover{transform:translateY(-3px)}
 .edicao-img{height:110px;background:var(--preto);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:46px;color:var(--amarelo);}
@@ -558,7 +558,7 @@ footer{background:var(--preto);padding:60px 7% 32px;}
   .show-card--destaque{grid-column:span 2;min-height:240px}
   .prog-grid{grid-template-columns:1fr}
   .footer-top{grid-template-columns:1fr 1fr;gap:32px}
-  .edicoes-grid{grid-template-columns:1fr 1fr}
+  .edicoes-grid{grid-template-columns:1fr}
   .hero-meta{flex-wrap:wrap;gap:20px}
   .carrossel-slide{width:180px;height:180px}
   .hero-content{padding:32px 28px 28px;margin:0 5% 40px}
@@ -570,7 +570,7 @@ footer{background:var(--preto);padding:60px 7% 32px;}
   .shows-grid{grid-template-columns:1fr}
   .show-card--destaque{grid-column:span 1}
   .footer-top{grid-template-columns:1fr}
-  .edicoes-grid{grid-template-columns:1fr 1fr}
+  .edicoes-grid{grid-template-columns:1fr}
   nav{padding:0 4%}
 
   /* Menu mobile */
@@ -953,26 +953,15 @@ footer{background:var(--preto);padding:60px 7% 32px;}
 <section class="edicoes" id="edicoes">
   <div class="section-header">
     <div>
-      <p class="section-eyebrow" style="color:rgba(26,18,8,0.5)">Arquivo</p>
-      <h2 class="section-title" style="color:var(--preto)">TODAS AS EDIÇÕES</h2>
+      <p class="section-eyebrow" style="color:rgba(26,18,8,0.5)">Festival</p>
+      <h2 class="section-title" style="color:var(--preto)">EDIÇÃO ATUAL</h2>
     </div>
   </div>
   <div class="edicoes-grid" id="edicoes-grid">
+    <!-- Fallback estático: apenas a edição mais recente -->
     <a class="edicao-card edicao-atual" href="#atracoes">
       <div class="edicao-img">2026</div>
       <div class="edicao-body"><span class="badge-atual">Edição atual</span><h4>6ª Edição</h4><p>13 e 14 de junho · Bairro Boa Vista</p></div>
-    </a>
-    <a class="edicao-card" href="#atracoes">
-      <div class="edicao-img">2025</div>
-      <div class="edicao-body"><h4>5ª Edição</h4><p>Junho 2025 · Ver galeria</p></div>
-    </a>
-    <a class="edicao-card" href="#atracoes">
-      <div class="edicao-img">2024</div>
-      <div class="edicao-body"><h4>4ª Edição</h4><p>Junho 2024 · Ver galeria</p></div>
-    </a>
-    <a class="edicao-card" href="#atracoes">
-      <div class="edicao-img">2023</div>
-      <div class="edicao-body"><h4>3ª Edição</h4><p>Junho 2023 · Ver galeria</p></div>
     </a>
   </div>
 </section>
@@ -1040,7 +1029,7 @@ footer{background:var(--preto);padding:60px 7% 32px;}
         <li><a href="#sobre">O evento</a></li>
         <li><a href="#programacao">Programação</a></li>
         <li><a href="#atracoes">Atrações</a></li>
-        <li><a href="#edicoes">Edições anteriores</a></li>
+        <li><a href="#edicoes">Edição atual</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -1353,26 +1342,41 @@ footer{background:var(--preto);padding:60px 7% 32px;}
         if(progTitulo) progTitulo.textContent = 'PRÓXIMA EDIÇÃO EM BREVE';
         progGrid.innerHTML = '<div style="grid-column:1/-1;background:var(--preto);color:var(--branco);padding:48px 24px;border-radius:14px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.15)">' +
           '<h3 style="font-size:26px;color:var(--amarelo);margin-bottom:12px;font-family:\'Bebas Neue\',sans-serif;letter-spacing:1.5px">PRÓXIMA EDIÇÃO EM BREVE!</h3>' +
-          '<p style="color:rgba(255,255,255,0.75);max-width:540px;margin:0 auto 24px;font-size:15px;line-height:1.6">As edições anteriores já foram finalizadas e a programação do próximo festival será divulgada em breve. Enquanto isso, navegue abaixo pelas fotos e atrações dos anos anteriores!</p>' +
-          '<a href="#edicoes" class="btn-primary" style="display:inline-block">Ver Edições Anteriores</a>' +
+          '<p style="color:rgba(255,255,255,0.75);max-width:540px;margin:0 auto 24px;font-size:15px;line-height:1.6">A programação do próximo festival será divulgada em breve. Enquanto isso, confira as atrações e fotos da última edição!</p>' +
+          '<a href="#edicoes" class="btn-primary" style="display:inline-block">Ver Última Edição</a>' +
         '</div>';
       }
     }
 
-    // Renderiza os cards das edições no arquivo histórico
+    // Renderiza apenas a edição ativa (ou a mais recente) para não confundir o usuário
     if(grid){
-      grid.innerHTML = list.map(function(ed, index){
-        var isAtiva = ed.status === 'ativa';
-        var cardClass = 'edicao-card' + (isAtiva ? ' edicao-atual' : '');
+      // Filtra: mostra apenas a edição ativa, ou a mais recente se nenhuma for ativa
+      var edicaoExibida = ativa || list[0];
+      if(edicaoExibida){
+        var isAtiva = edicaoExibida.status === 'ativa';
+        var cardClass = 'edicao-card edicao-atual';
         var badge = isAtiva 
           ? '<span class="badge-atual">Edição atual</span>' 
-          : (index === 0 && !ativa ? '<span class="badge-atual" style="background:rgba(26,18,8,0.15);color:var(--preto)">Última edição</span>' : '<span class="badge-atual" style="background:rgba(26,18,8,0.08);color:rgba(26,18,8,0.6)">Edição anterior</span>');
+          : '<span class="badge-atual" style="background:rgba(26,18,8,0.15);color:var(--preto)">Última edição</span>';
+        var tituloSecao = isAtiva ? 'EDIÇÃO ATUAL' : 'ÚLTIMA EDIÇÃO';
+        var eyebrowSecao = isAtiva ? 'Festival' : 'Arquivo';
         
-        return '<a class="' + cardClass + '" href="#atracoes" data-id="' + esc(ed.id) + '">' +
-          '<div class="edicao-img">' + esc(ed.ano || '') + '</div>' +
-          '<div class="edicao-body">' + badge + '<h4>' + esc(ed.nome) + '</h4><p>' + esc(ed.subtitulo) + '</p></div>' +
+        // Atualiza título da seção conforme o status
+        var secHeader = grid.closest('.edicoes');
+        if(secHeader){
+          var titulo = secHeader.querySelector('.section-title');
+          var eyebrow = secHeader.querySelector('.section-eyebrow');
+          if(titulo) titulo.textContent = tituloSecao;
+          if(eyebrow) eyebrow.textContent = eyebrowSecao;
+        }
+        
+        grid.innerHTML = '<a class="' + cardClass + '" href="#atracoes" data-id="' + esc(edicaoExibida.id) + '">' +
+          '<div class="edicao-img">' + esc(edicaoExibida.ano || '') + '</div>' +
+          '<div class="edicao-body">' + badge + '<h4>' + esc(edicaoExibida.nome) + '</h4><p>' + esc(edicaoExibida.subtitulo) + '</p></div>' +
         '</a>';
-      }).join('');
+      } else {
+        grid.innerHTML = '<div style="color:var(--cinza-texto);text-align:center;padding:40px;grid-column:1/-1">Nenhuma edição cadastrada.</div>';
+      }
 
       // Listener de clique para filtrar as atrações da edição selecionada
       grid.addEventListener('click', function(e){
